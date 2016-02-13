@@ -36,6 +36,6 @@ getRandomGiphyGif = (msg, tags) ->
     msg.send(message)
 
 module.exports = (robot) ->
-  robot.respond /gif me|giphy(.*)/i, (msg) ->
-    tags = msg.match[1].trim().split(', ')
+  robot.respond /(gif me|giphy)(.*)/i, (msg) ->
+    tags = msg.match[2].trim().split(', ')
     getRandomGiphyGif(msg, tags)
