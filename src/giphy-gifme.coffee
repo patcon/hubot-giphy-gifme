@@ -17,8 +17,6 @@
 api_key = process.env.HUBOT_GIPHY_API_KEY or 'dc6zaTOxFJmzC' # <== Giphy's public API key, please request your own!
 rating_limit = process.env.HUBOT_GIPHY_RATING or 'pg'
 
-Array::empty = -> @.length == 0
-
 getRandomGiphyGif = (msg, tags) ->
   url = "http://api.giphy.com/v1/gifs/random?api_key=#{api_key}&rating=#{rating_limit}"
   if tags and tags[0] != ''
@@ -26,9 +24,12 @@ getRandomGiphyGif = (msg, tags) ->
     for i in [1...tags.length]
       url += ('+' + tags[i]) if tags[i].length > 0
   msg.http(url).get() (err, res, body) ->
-    response = JSON.parse(body);
-    if response.data.empty()
+    response = JSON.parse(body)
+    # Bad API design:
+    # Returns empty array when no results
+    if response.data.length == 0
       message = "No gifs match your tags :("
+    # Returns an object (ie. hash) when has result
     else
       message = response.data.image_url
 
